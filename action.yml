@@ -4,3 +4,78 @@ author: Lukas Klingsbo
 branding:
   icon: loader
   color: purple
+inputs:
+  tag:
+    description: 'Whether packages should be tagged and pushed to the repository (default: false)'
+    required: false
+    default: 'false'
+  publish:
+    description: 'Whether package should be published to pub.dev (default: false)'
+    required: false
+    default: 'false'
+  dry-run:
+    description: 'Whether it first should run a dry-run publish of the package (default: true)'
+    required: false
+    default: 'true'
+  create-pr:
+    description: 'Whether a PR should be created with the versioning changes (default: false)'
+    required: false
+    default: 'false'
+  git-email:
+    description: 'The email to use when committing changes'
+    required: false
+    default: 'contact@blue-fire.xyz'
+  git-name:
+    description: 'The name to use when committing changes'
+    required: false
+    default: 'Flutter Publish Action'
+runs:
+  using: composite
+  steps:
+    #- name: 'Set up git config for email and name'
+    #  if: ${{ inputs.publish == 'true' }}
+    #  run: |
+    #    git config --global user.email "${{ inputs.git-email }}"
+    #    git config --global user.name "${{ inputs.git-name }}"
+    #  shell: bash
+    #- name: 'Create Pull Request with changes'
+    #  if: ${{ inputs.create-pr == 'true' }}
+    #  uses: peter-evans/create-pull-request@v5
+    #  with:
+    #    title: 'chore(release): Publish packages'
+    #    body: 'Prepared all packages to be released to pub.dev'
+    #    branch: release-${{github.run_id}}
+    #- name: 'Create and push tags to the repository'
+    #  if: ${{ inputs.tag == 'true' }}
+    #  run: |
+    #    melos exec -c 1 --no-private -- git tag \$MELOS_PACKAGE_NAME-v\$MELOS_PACKAGE_VERSION && \
+    #    git push --tags
+    #  shell: bash
+    #- name: Trigger Another Workflow
+    #  if: ${{ inputs.tag == 'true' }}
+    #  run: gh workflow run publish.yml -r melos_action_test-v0.0.20
+    #  env:
+    #    GH_TOKEN: ${{ github.token }}
+    #  shell: bash
+      #uses: actions/github-script@v5
+      #with:
+      #  script: |
+      #    const response = await github.request('POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches', {
+      #      owner: context.repo.owner,
+      #      repo: context.repo.repo,
+      #      workflow_id: 'publish.yml',
+      #      ref: 'refs/tags/melos_action_test-v0.0.12'
+      #    });
+
+      #    console.log(response.status);
+    - name: 'Installs the Dart SDK and sets up the pipeline for usage with pub.dev (this sets up OIDC)'
+      if: ${{ inputs.publish == 'true' }}
+      uses: dart-lang/setup-dart@v1
+    - name: 'Publish (dry-run) package related to tag to pub.dev'
+      if: ${{ inputs.dry-run == 'true' }}
+      run: dart pub publish --dry-run
+      shell: bash
+    - name: 'Publish package related to tag to pub.dev'
+      if: ${{ inputs.publish == 'true' }}
+      run: dart pub publish
+      shell: bash
