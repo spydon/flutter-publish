@@ -1,0 +1,6 @@
+name: Flutter publish
+description: Publish your pub packages directly from a GitHub action
+author: Lukas Klingsbo
+branding:
+  icon: loader
+  color: purple
