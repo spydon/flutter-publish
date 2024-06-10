@@ -73,6 +73,7 @@ runs:
       uses: dart-lang/setup-dart@v1
     - name: 'Install dependencies'
       run: dart pub get
+      shell: bash
     - name: 'Publish (dry-run) package related to tag to pub.dev'
       if: ${{ inputs.dry-run == 'true' }}
       run: dart pub publish --dry-run
