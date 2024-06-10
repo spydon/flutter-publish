@@ -68,8 +68,11 @@ runs:
       #    });
 
       #    console.log(response.status);
+    - uses: actions/checkout@v4
     - name: 'Installs the Dart SDK and sets up the pipeline for usage with pub.dev (this sets up OIDC)'
       uses: dart-lang/setup-dart@v1
+    - name: 'Install dependencies'
+      run: dart pub get
     - name: 'Publish (dry-run) package related to tag to pub.dev'
       if: ${{ inputs.dry-run == 'true' }}
       run: dart pub publish --dry-run
