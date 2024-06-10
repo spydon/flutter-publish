@@ -76,5 +76,5 @@ runs:
       shell: bash
     - name: 'Publish package related to tag to pub.dev'
       if: ${{ inputs.publish == 'true' }}
-      run: yes | dart pub publish
+      run: yes | dart pub publish -f
       shell: bash
