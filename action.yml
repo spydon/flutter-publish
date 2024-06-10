@@ -31,6 +31,9 @@ inputs:
     default: 'Flutter Publish Action'
 runs:
   using: composite
+  permissions:
+    id-token: write # This is required for requesting the JWT
+  runs-on: ubuntu-latest
   steps:
     #- name: 'Set up git config for email and name'
     #  if: ${{ inputs.publish == 'true' }}
